@@ -1,7 +1,8 @@
 //获取HTML元素以及ctx
 var cvsEL = document.getElementById("canvas");
 var ctx = cvsEL.getContext("2d");
-var buffer = document.createElement('canvas');
+var bufferEl = document.createElement('canvas');
+var buffer = bufferEl.getContext("2d");
 
 window.addEventListener('resize',setCVSsize);
 
@@ -27,10 +28,11 @@ function update_loadFile(load_state,progress){
 function renderFrame_loadFile(progress){
     //加载文件时使用渲染的函数
     //黑色背景
-    buffer.width = cvsEL.width;
-    buffer.height = cvsEL.height;
-    ctx.fillStyle = "#000";
-    ctx.fillRect(0,0,buffer.width,buffer.height);
+    bufferEl.width = cvsEL.width;
+    bufferEl.height = cvsEL.height;
+    buffer.fillStyle = "#000";
+    buffer.fillRect(0,0,bufferEl.width,bufferEl.height);
+    ctx.drawImage(bufferEl,0,0);
 }
 function renderFrame(){
     //渲染一帧到canvas(加载完成之后的渲染函数主逻辑)
