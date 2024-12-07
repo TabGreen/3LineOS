@@ -3,16 +3,40 @@
 2. init.js 初始化设置
 3. load.js 加载文件
 
+# 全局变量以及函数(函数后以()做标记)
+- variables.js
+    - defaultGradientColor
+- default.js
+    - bufferList*程序运行过程中,会用到大量buffer,为防止混淆,这里可以由不同函数自行添加CVS或CTX*
+    - bufferList.drawICOBufferEl
+    - bufferList.drawICOBuffer
+    - bufferList.drawProgBarBufferEl
+    - bufferList.drawProgBarBuffer
 
-# 全局函数
-- renderFrame 渲染一帧 (init.js)
-
-# 全局变量
-- cvsEL(init.js)
-- ctx(init.js)
-- bufferEl(init.js)
-- buffer(init.js)
-- bufferList(default.js)*程序运行过程中,会用到大量buffer,为防止混淆,这里可以由不同函数自行添加CVS或CTX*
+    - drawICO(width, height)
+    - drawProgressBar(width, height, progress)
+- init.js
+    - cvsEL
+    - ctx
+    - bufferEl
+    - buffer
+    - loadPage = {
+        - load_state
+        - progress
+        - iconWidth
+        - iconMargin
+        - progressBarWidth
+        - progressBarHeight
+        - ScaleFactor_progBarMarginTop
+        - ScaleFactor_ICONAreaMarginBottom
+    }
+    - loadPage_data = {
+        - progress
+    }
+    - setCVSsize(e)
+    - update_loadFile()
+    - renderFrame_loadFile(progress)
+    - renderFrame() 渲染一帧
 # 进度
 1. 实现canvas自动适应浏览器窗口大小,并在窗口变化时渲染一帧 (完成✅)
 2. 实现加载文件并显示进度条

@@ -19,11 +19,59 @@ bufferList.drawProgBarBufferEl = document.createElement("canvas");
 bufferList.drawProgBarBuffer = bufferList.drawProgBarBufferEl.getContext("2d");
 function drawProgressBar(width,height,progress){
     //绘制进度条,并返回dataURL
+    const inset = 1.5; // 可以根据需要调整这个值
+    //(防止图形边框与画布边框重合)
+
+// 1. 绘制进度条边框
     bufferList.drawProgBarBufferEl.width = width;
-    bufferList.drawProgBarBufferEl.height = height;
+    bufferList.drawProgBarBufferEl.height = height+inset;
     bufferList.drawProgBarBuffer.clearRect(0,0,width,height);
-    bufferList.drawProgBarBuffer.fillStyle = "#fff";
-    bufferList.drawProgBarBuffer.fillRect(0,0,width,height);
+    // 设置路径
+    bufferList.drawProgBarBuffer.beginPath();
+
+    // 绘制左边的半圆
+    bufferList.drawProgBarBuffer.arc(
+        height / 2,
+        height / 2,
+        (height / 2) - inset, // 减少半径以实现内缩
+        Math.PI / 2,
+        3 * Math.PI / 2,
+        false
+    );
+    // 绘制直线至右边
+    bufferList.drawProgBarBuffer.lineTo(width-height/2-inset,inset);
+    bufferList.drawProgBarBuffer.arc(
+        width - height / 2,
+        height / 2,
+        (height / 2) - inset, // 减少半径以实现内缩
+        -Math.PI / 2,
+        Math.PI / 2,
+        false
+    );
+    bufferList.drawProgBarBuffer.lineTo(height / 2, height - inset);
+
+    // 关闭路径
+    bufferList.drawProgBarBuffer.closePath();
+
+    // 绘制填充
+    //bufferList.drawProgBarBuffer.fillStyle = "#fff";
+    //bufferList.drawProgBarBuffer.fill();
+
+    // 绘制边框
+    //为边框加入渐变(测试)
+    const gradient = bufferList.drawProgBarBuffer.createLinearGradient(0, 0, width, 0);
+    let c = defaultGradientColor;
+    gradient.addColorStop(0,`rgb(${c[0][0]},${c[0][1]},${c[0][2]})`);
+    gradient.addColorStop(1,`rgb(${c[1][0]},${c[1][1]},${c[1][2]})`);
+    bufferList.drawProgBarBuffer.strokeStyle = gradient;
+
+    bufferList.drawProgBarBuffer.lineWidth = 2;
+    bufferList.drawProgBarBuffer.stroke();
+
+// 2. 绘制进度
+    false && false;
+
+    // 返回数据URL
     return bufferList.drawProgBarBufferEl.toDataURL('image/png');
 
 }

@@ -16,9 +16,10 @@ function setCVSsize(e){
         renderFrame();
     }
 }
-function update_loadFile(load_state,progress){
+function update_loadFile(/*load_state,progress*/){
     //加载文件时使用更新数据的函数
-    renderFrame_loadFile();
+    let progress = loadPage_data.progress;
+    renderFrame_loadFile(progress);
     //如果加载完成,则取消Interval
     if(loadPage.load_state){
         clearInterval(update_loadFile_interval);
@@ -99,9 +100,13 @@ var loadPage = {//"加载"页面的数据
     iconWidth:0.2,//一个图标对于CVS的高度的占比.(图像长宽相等)
     iconMargin:0.25,//一个图标的边距对于CVS的长度的占比.
     progressBarWidth:0.3,//进度条对于CVS的长度的占比.
-    progressBarHeight:0.012,//进度条对于CVS的宽度的占比.
-    ScaleFactor_progBarMarginTop:2,//这个数字越大,进度条与图标挨得越近,但不是外边距
+    progressBarHeight:0.014,//进度条对于CVS的宽度的占比.
+    ScaleFactor_progBarMarginTop:1.7,//这个数字越大,进度条与图标挨得越近,但不是外边距
     ScaleFactor_ICONAreaMarginBottom:1,//介于0和1之间,这个数字越大,图标与进度条的间距越远,仅影响进度条的绘制
+}
+var loadPage_data = {
+    //加载文件时使用,用于更新数据
+    progress:0,
 }
 var threelineos = {//"操作系统"的数据
     page:'loading',
