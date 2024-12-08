@@ -11,7 +11,7 @@ function setCVSsize(e){
     cvsEL.width = window.innerWidth;
     cvsEL.height = window.innerHeight;
     if(threelineos.page=='loading'){
-        renderFrame_loadFile();
+        renderFrame_loadFile(loadPage_data.progress);
     }else{
         renderFrame();
     }
@@ -24,14 +24,14 @@ function update_loadFile(/*load_state,progress*/){
     if(loadPage.load_state){
         clearInterval(update_loadFile_interval);
     }
-
+/*这段代码只是为了演示!!*/if(progress >=1 ){loadPage_data.progress = 0;}else{loadPage_data.progress += 0.01;}
 }
 function renderFrame_loadFile(progress){
     //加载文件时使用渲染的函数
     //黑色背景
     bufferEl.width = cvsEL.width;
     bufferEl.height = cvsEL.height;
-    buffer.fillStyle = "#000";
+    buffer.fillStyle = defaultCloseColor;
     buffer.fillRect(0,0,bufferEl.width,bufferEl.height);
 
 
@@ -71,10 +71,10 @@ function renderFrame_loadFile(progress){
     progressBarWidth = Math.floor(progressBarWidth);
 
     //绘制图标
-    drawICO(iconWidth,iconWidth)
+    drawICO(iconWidth,iconWidth);
     buffer.drawImage(bufferList.drawICOBufferEl,iconX,iconY);
     //绘制进度条
-    buffer.fillStyle = "#fff";
+    //buffer.fillStyle = "#fff";
     drawProgressBar(progressBarWidth,progressBarHeight,progress)
     buffer.drawImage(bufferList.drawProgBarBufferEl,progressBarX,progressBarY);
     /*
@@ -112,5 +112,5 @@ var threelineos = {//"操作系统"的数据
     page:'loading',
 }
 
-var update_loadFile_interval = setInterval(update_loadFile,100);
+var update_loadFile_interval = setInterval(update_loadFile,updateTime);
 setCVSsize();
