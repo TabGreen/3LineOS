@@ -12,6 +12,10 @@ function drawICO(width,height){
     bufferList.drawICOBuffer.clearRect(0,0,width,height);
     bufferList.drawICOBuffer.fillStyle = "#fff";
     bufferList.drawICOBuffer.fillRect(0,0,width,height);
+
+    bufferList.drawICOBuffer.fillStyle = "#888";
+    bufferList.drawICOBuffer.font = `${width/2}px Arial`;
+    bufferList.drawICOBuffer.fillText("图标",0,height/4*2.5);
     //return bufferList.drawICOBufferEl.toDataURL('image/png');
 }
 bufferList.drawProgBarBufferEl = document.createElement("canvas");
@@ -105,8 +109,21 @@ function drawProgressBar(width,height,progress){
     gradient.addColorStop(1,`rgb(${g[1][0]},${g[1][1]},${g[1][2]})`);
     bufferList.drawProgBarBuffer.strokeStyle = gradient;
 
-    bufferList.drawProgBarBuffer.lineWidth = 2;
+    bufferList.drawProgBarBuffer.lineWidth = Math.floor(height/4);
     bufferList.drawProgBarBuffer.stroke();
+
+
+    /*当然,可能有人把窗口缩放到很小,导致进度条高度为1
+    这里不更改主主逻辑,只是重新绘制一下,
+    谁让TA们闲的没事干*/
+    let minHeight = 2;//高度临界值
+    if(height<=minHeight){
+        bufferList.drawProgBarBuffer.clearRect(0,0,width,height);
+        bufferList.drawProgBarBuffer.fillStyle = "#888";
+        bufferList.drawProgBarBuffer.fillRect(0,0,width,height);
+        bufferList.drawProgBarBuffer.fillStyle = "#fff";
+        bufferList.drawProgBarBuffer.fillRect(0,0,Math.floor(width*progress),height);
+    }
 
     // 返回数据URL
     //return bufferList.drawProgBarBufferEl.toDataURL('image/png');

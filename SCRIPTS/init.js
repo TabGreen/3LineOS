@@ -35,31 +35,22 @@ function renderFrame_loadFile(progress){
     buffer.fillRect(0,0,bufferEl.width,bufferEl.height);
 
 
-    //计算图标位置
-    let iconWidth_W = bufferEl.width * loadPage.iconWidth;
-    let iconWidth_H = bufferEl.height * loadPage.iconWidth;
     let usedNumber;
-    let iconWidth;
-    if(iconWidth_W>iconWidth_H){
-        iconWidth = iconWidth_H;
+    if(bufferEl.height>bufferEl.width){
         usedNumber = bufferEl.height;
     }else{
-        iconWidth = iconWidth_W;
         usedNumber = bufferEl.width;
     }
-    let progressBarWidth = bufferEl.width * loadPage.progressBarWidth;
-    let progressBarHeight = bufferEl.height * loadPage.progressBarHeight;
-    
-    let iconY = bufferEl.height * loadPage.iconMargin;
-    //let iconMargin = (bufferEl.width - iconWidth)/2;
-    let iconMargin = loadPage.iconMargin * usedNumber;
+    //计算图标位置
+    let iconWidth;
+    iconWidth = usedNumber * loadPage_style.iconWidth;
     let iconX = (bufferEl.width - iconWidth)/2;
-
-    let progressBarX = (bufferEl.width * (1-loadPage.progressBarWidth))/2;
-    let iconAreaHeight = iconWidth + iconMargin*loadPage.ScaleFactor_ICONAreaMarginBottom;
-    let progressBarAreaHeight = bufferEl.height - iconAreaHeight;
-    let progressBarMargin = (progressBarAreaHeight - progressBarHeight)/2;
-    let progressBarY = iconAreaHeight + progressBarMargin/loadPage.ScaleFactor_progBarMarginTop;
+    let iconY = bufferEl.height*(0.45)-iconWidth/2;
+    //计算进度条位置
+    let progressBarWidth = usedNumber * loadPage_style.progressBarWidth;
+    let progressBarHeight = usedNumber * loadPage_style.progressBarHeight;
+    let progressBarX = (bufferEl.width - progressBarWidth)/2;
+    let progressBarY = iconY + iconWidth + iconWidth*loadPage_style.ScaleFactor_progBarDis;
 
     //把有用的参数向下取整
     iconX = Math.floor(iconX);
@@ -69,6 +60,7 @@ function renderFrame_loadFile(progress){
 
     iconWidth = Math.floor(iconWidth);
     progressBarWidth = Math.floor(progressBarWidth);
+    progressBarHeight = Math.ceil(progressBarHeight);
 
     //绘制图标
     drawICO(iconWidth,iconWidth);
@@ -97,12 +89,12 @@ function update(){
 var loadPage = {//"加载"页面的数据
     load_state:0,
     progress:0,
-    iconWidth:0.2,//一个图标对于CVS的高度的占比.(图像长宽相等)
-    iconMargin:0.25,//一个图标的边距对于CVS的长度的占比.
-    progressBarWidth:0.3,//进度条对于CVS的长度的占比.
-    progressBarHeight:0.014,//进度条对于CVS的宽度的占比.
-    ScaleFactor_progBarMarginTop:1.7,//这个数字越大,进度条与图标挨得越近,但不是外边距
-    ScaleFactor_ICONAreaMarginBottom:1,//介于0和1之间,这个数字越大,图标与进度条的间距越远,仅影响进度条的绘制
+}
+var loadPage_style = {
+    iconWidth:0.115,//一个图标对于CVS的高度或宽度的占比.(图像长宽相等)
+    progressBarWidth:0.13,//进度条对于CVS的高度或宽度的占比.
+    progressBarHeight:0.006,//进度条对于CVS的高度或宽度的占比.
+    ScaleFactor_progBarDis:0.4,//进度条在Y坐标上与图标的距离(this*iconWidth)的比值.
 }
 var loadPage_data = {
     //加载文件时使用,用于更新数据

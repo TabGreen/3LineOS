@@ -1,7 +1,8 @@
 # JS文件加载顺序
-1. default.js 默认文件
-2. init.js 初始化设置
-3. load.js 加载文件
+1. variables.js 全局变量
+2. default.js 默认脚本文件,包含一些变量和函数
+3. init.js 初始化设置,加载页面外观
+4. load.js 加载文件
 
 # 全局变量以及函数(函数后以()做标记)
 - variables.js
