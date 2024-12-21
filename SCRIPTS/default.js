@@ -117,12 +117,12 @@ function drawProgressBar(width,height,progress){
     这里不更改主主逻辑,只是重新绘制一下,
     谁让TA们闲的没事干*/
     let minHeight = 2;//高度临界值
-    if(height<=minHeight){
+    if(height<=minHeight+inset*2){
         bufferList.drawProgBarBuffer.clearRect(0,0,width,height);
         bufferList.drawProgBarBuffer.fillStyle = "#888";
-        bufferList.drawProgBarBuffer.fillRect(0,0,width,height);
+        bufferList.drawProgBarBuffer.fillRect(inset,inset,width-inset,height-inset);
         bufferList.drawProgBarBuffer.fillStyle = "#fff";
-        bufferList.drawProgBarBuffer.fillRect(0,0,Math.floor(width*progress),height);
+        bufferList.drawProgBarBuffer.fillRect(inset,inset,Math.floor(width*progress)-inset,height-inset);
     }
 
     // 返回数据URL

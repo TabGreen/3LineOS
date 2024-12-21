@@ -4,6 +4,10 @@
 3. init.js 初始化设置,加载页面外观
 4. load.js 加载文件
 
+5. mainUpdate.js 启动系统
+# 
+以SCRIPTS中的文件为引导,为了启动SystemScripts中真正的系统文件
+
 # 全局变量以及函数(函数后以()做标记)
 - variables.js
     - defaultGradientColor
@@ -24,25 +28,37 @@
     - bufferEl
     - buffer
     - loadPage = {
-        - load_state
+        - isLoaded
         - progress
-        - iconWidth
-        - iconMargin
-        - progressBarWidth
-        - progressBarHeight
-        - ScaleFactor_progBarMarginTop
-        - ScaleFactor_ICONAreaMarginBottom
+    }
+    - loadPage_style = {
+        - iconWidth:0.115,//一个图标对于CVS的高度或宽度的占比.(图像长宽相等)
+        - progressBarWidth:0.13,//进度条对于CVS的高度或宽度的占比.
+        - progressBarHeight:0.006,//进度条对于CVS的高度或宽度的占比.
+        - ScaleFactor_progBarDis:0.4,//进度条在Y坐标上与图标的距离(this*iconWidth)的比值.
     }
     - loadPage_data = {
         - progress
     }
+    - tlOS = {//three line OS的缩写
+        - isLoaded
+    }
     - setCVSsize(e)
     - update_loadFile()
     - renderFrame_loadFile(progress)
-    - renderFrame() 渲染一帧
+    - renderFrame()
+- loadFile.js
+    - fileListPath //临时变量
+    - downloadFilesWithProgress()
+    - ReadBlob()
+- mainUpdate.js
+    - loadPageToLoginPage //先预备着,不知道用不用
 # 进度
 1. 实现canvas自动适应浏览器窗口大小,并在窗口变化时渲染一帧 (完成✅)
 2. 实现加载文件并显示进度条
     1. 显示进度条位置(完成✅)
     2. 绘制空进度条,实现绘制函数(完成✅)
-    3. 加载文件(未完成❎)
+    3. 加载文件
+        1. “加载”函数(完成✅)
+        2. 获取文件列表(完成✅)
+        3. 准备加载文件(未完成❎)
