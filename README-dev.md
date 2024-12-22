@@ -5,6 +5,7 @@
 4. load.js 加载文件
 
 5. mainUpdate.js 启动系统
+6. loadWorkers.js 加载线程
 # 
 以SCRIPTS中的文件为引导,为了启动SystemScripts中真正的系统文件
 
@@ -49,10 +50,16 @@
     - renderFrame()
 - loadFile.js
     - fileListPath //临时变量
+    - fileList
     - downloadFilesWithProgress()
     - ReadBlob()
+    - loadScriptsInOrder()
+    - getFileList()
 - mainUpdate.js
-    - loadPageToLoginPage //先预备着,不知道用不用
+    - initOS()
+    - loadPageToLoginPage() //先预备着,不知道用不用
+- loadWorkers.js
+    - loadWorkers() //预备
 # 进度
 1. 实现canvas自动适应浏览器窗口大小,并在窗口变化时渲染一帧 (完成✅)
 2. 实现加载文件并显示进度条
@@ -61,4 +68,22 @@
     3. 加载文件
         1. “加载”函数(完成✅)
         2. 获取文件列表(完成✅)
-        3. 准备加载文件(未完成❎)
+        3. 加载文件(完成✅)
+    4. 系统
+
+        *由于这部分内容关系复杂,已经不是简单的单线程和包含关系了,因此这部分内容会同时开发*
+
+        **下一阶段:提取init.js文件中的渲染程序,为后续的加载Worker页面做准备**
+
+        - API构建
+        - 代码执行器
+            - 应用执行
+            - 进程执行
+                - 应用进程
+                - 系统进程
+        - 渲染程序构建
+            - 加载界面
+                - 脚本文件(完成✅)
+                - Worker
+                - 配置
+        - 登录界面

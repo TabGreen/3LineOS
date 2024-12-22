@@ -1,5 +1,6 @@
 {
     "JSfiles":[
-        "core/mainUpdate.js"
+        "core/mainUpdate.js",
+        "core/API/loadAPI.js"
     ]
 }

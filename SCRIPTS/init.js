@@ -21,6 +21,7 @@ var loadPage_data = {
 }
 var tlOS = {//"操作系统"的数据
     isloaded:false,
+    state:'loading'//操作系统状态
 }
 
 //
@@ -30,10 +31,15 @@ function setCVSsize(e){
     //针对浏览器窗口大小变化时使用更新的函数
     cvsEL.width = window.innerWidth;
     cvsEL.height = window.innerHeight;
-    if(loadPage.isLoaded){
-        renderFrame();
-    }else{
-        renderFrame_loadFile();
+    switch(tlOS.state){
+        case 'loading':
+            renderFrame_loadFile();
+            break;
+        case 'init':
+            renderFrame_init();
+            break;
+        default:
+            break;
     }
 }
 function renderFrame_loadFile(){

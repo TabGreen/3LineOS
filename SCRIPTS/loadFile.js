@@ -64,7 +64,7 @@ async function downloadFilesWithProgress(fileUrls, handleProgress = ()=>{},hande
     handelResults(results);
     //return results;
 }
-async function ReadBlob(files, handleResult, readType = 'text') {
+async function ReadBlob(files, handleResult = ()=>{}, readType = 'text') {
     const results = []; // 用于累积文件内容
     for (let i = 0; i < files.length; i++) {
         const file = files[i];
@@ -133,22 +133,85 @@ async function ReadBlob(files, handleResult, readType = 'text') {
 }
 
 
+function loadScriptsInOrder(fileList, handleEnd = ()=>{}) {
+    let index = 0;
+    function loadNextScript() {
+    if (index >= fileList.length) {
+        // 所有脚本加载完成，调用 handleEnd
+        handleEnd();
+        return;
+    }
+    const url = fileList[index];
+    const script = document.createElement('script');
+    script.src = url;
+      script.async = false; // 确保脚本按顺序执行
+      script.defer = true;  // 确保脚本在文档解析完成后执行
+    script.onload = () => {
+        //console.log(`Script ${index + 1} (${url}) loaded and executed successfully.`);
+        index++;
+        loadNextScript(); // 加载下一个脚本
+    };
+    script.onerror = (error) => {
+        //console.error(`Error loading or executing script ${index + 1} (${url}):`, error);
+        index++;
+        loadNextScript(); // 继续加载下一个脚本，即使当前脚本失败
+    };
+    document.body.appendChild(script);
+    }
+    // 开始加载第一个脚本
+    loadNextScript();
+}
 //主逻辑开始
-let fileListPath = 'SystemScripts/fileList.json';
-downloadFilesWithProgress([fileListPath],
-    ()=>{},
-    (results)=>{
-        ReadBlob(results,(result,index)=>{
-            console.log(result);
+const fileListDir = 'SystemScripts/';//以fileListDir作为请求目录
+const fileListPath = fileListDir+'fileList.json';
+let fileList;
+//获取文件列表
+function getFileList(){
+    downloadFilesWithProgress([fileListPath],
+        ()=>{},
+        (results)=>{
+            ReadBlob(results,(result,index)=>{
+                if(result[0] !== null){
+                    //下载文件
+
+                    fileList = JSON.parse(result[0]);
+                    getJSFiles(fileList['JSfiles'],fileListDir);
+
+                }else{
+                    setTimeout(()=>{
+                        getFileList();
+                    },1000);//重试下载
+                }
+            });
+    });
+}
+function getJSFiles(fileList,fileListDir){
+    if(fileListDir){//以fileListDir作为请求目录
+        fileList = fileList.map((file)=>{
+            return fileListDir+file;
         });
-});
+    }
+    //利用缓存机制
+    downloadFilesWithProgress(fileList,
+        (progress)=>{
+            loadPage_data.progress = progress;
+        },
+        (results)=>{
+            //插入script
+            loadScriptsInOrder(fileList,()=>{
+                //加载完成
+                loadPage.isLoaded = true;
+            });
+        }
+    );
+}
+getFileList();
 function update_loadFile(){
     //加载文件时使用更新数据的函数
     renderFrame_loadFile();
-    //如果加载完成,则取消Interval
+    //如果加载完成,则启动系统
     if(loadPage.isLoaded){
-        startOS();
+        initOS();
     }
-/*这段代码只是为了演示!!*/if(loadPage_data.progress >=1 ){loadPage_data.progress = 0;}else{loadPage_data.progress += 0.01;}
 }
 var update_loadFile_interval = setInterval(update_loadFile,updateTime);
