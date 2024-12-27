@@ -55,11 +55,16 @@
     - ReadBlob()
     - loadScriptsInOrder()
     - getFileList()
+    - getJSFilesByScEl()
+    - getFileListByAJAX()
 - mainUpdate.js
     - initOS()
     - loadPageToLoginPage() //先预备着,不知道用不用
 - loadWorkers.js
     - loadWorkers() //预备
+# 开关记录
+- 控制加载文件方法的开关
+    - loadFile.js 184
 # 进度
 1. 实现canvas自动适应浏览器窗口大小,并在窗口变化时渲染一帧 (完成✅)
 2. 实现加载文件并显示进度条
@@ -87,3 +92,6 @@
                 - Worker
                 - 配置
         - 登录界面
+# 计划
+1. 第一个开关-加载文件**是否**使用AJAX(完成✅)
+2. 分离加载页面渲染函数

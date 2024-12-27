@@ -173,9 +173,20 @@ function getFileList(){
             ReadBlob(results,(result,index)=>{
                 if(result[0] !== null){
                     //下载文件
-
                     fileList = JSON.parse(result[0]);
-                    getJSFiles(fileList['JSfiles'],fileListDir);
+                    let JSfileList = fileList['JSfiles'];
+
+                    if(fileListDir){//以fileListDir作为请求目录
+                        JSfileList = JSfileList.map((file)=>{
+                            return fileListDir+file;
+                        });
+                    }
+                    let isDevMode = true;
+                    if(isDevMode){
+                        getJSFilesByScEl(JSfileList);
+                    }else{
+                        getFileListByAJAX(JSfileList);
+                    }
 
                 }else{
                     setTimeout(()=>{
@@ -185,21 +196,33 @@ function getFileList(){
             });
     });
 }
-function getJSFiles(fileList,fileListDir){
-    if(fileListDir){//以fileListDir作为请求目录
-        fileList = fileList.map((file)=>{
-            return fileListDir+file;
+function getJSFilesByScEl(fileList){
+        //插入script
+        loadScriptsInOrder(fileList,()=>{
+            //加载完成
+            loadPage.isLoaded = true;
         });
-    }
-    //利用缓存机制
+        loadPage_data.progress = 0.9;
+}
+function getFileListByAJAX(fileList){
     downloadFilesWithProgress(fileList,
         (progress)=>{
             loadPage_data.progress = progress;
         },
         (results)=>{
-            //插入script
-            loadScriptsInOrder(fileList,()=>{
-                //加载完成
+            //if……null……
+            ReadBlob(results,(result,index)=>{
+                let scriptEl = document.createElement('script');
+                for(let i = 0;i < result.length;i++){
+                    if(result[i] !== null){
+                        scriptEl.innerHTML += '\n'+result[i];
+                        console.log(scriptEl)
+                    }else{
+                        //处理错误
+                    }
+                }
+                document.body.appendChild(scriptEl);
+                loadPage_data.progress = 1;
                 loadPage.isLoaded = true;
             });
         }
