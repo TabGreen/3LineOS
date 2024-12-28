@@ -42,14 +42,19 @@ function setCVSsize(e){
             break;
     }
 }
-function renderFrame_loadFile(){
+function renderFrame_loadFile(file = loadPage_data.progress,
+worker = 0,init = 0,isProg = true,usedAsFunc = 0){
+/*这个函数既可以作为加载文件时的渲染函数,也会在加载worker和初始化时作为普通函数被调用
+这几个参数是可选的,默认情况为了适应加载文件的页面*/
     //加载文件时使用渲染的函数
     //黑色背景
-    bufferEl.width = cvsEL.width;
-    bufferEl.height = cvsEL.height;
-    buffer.fillStyle = defaultCloseColor;
-    buffer.fillRect(0,0,bufferEl.width,bufferEl.height);
+    if(!usedAsFunc){
+        bufferEl.width = cvsEL.width;
+        bufferEl.height = cvsEL.height;
 
+        buffer.fillStyle = defaultCloseColor;
+        buffer.fillRect(0,0,bufferEl.width,bufferEl.height);
+    }
 
     let usedNumber;
     if(bufferEl.height>bufferEl.width){
@@ -79,19 +84,22 @@ function renderFrame_loadFile(){
     progressBarHeight = Math.ceil(progressBarHeight);
 
     //绘制图标
-    drawICO(iconWidth,iconWidth);
+    drawICO(iconWidth,iconWidth,[file,worker,init]);
     buffer.drawImage(bufferList.drawICOBufferEl,iconX,iconY);
     //绘制进度条
     //buffer.fillStyle = "#fff";
-    drawProgressBar(progressBarWidth,progressBarHeight,loadPage_data.progress)
-    buffer.drawImage(bufferList.drawProgBarBufferEl,progressBarX,progressBarY);
+    if(isProg){
+        drawProgressBar(progressBarWidth,progressBarHeight,loadPage_data.progress)
+        buffer.drawImage(bufferList.drawProgBarBufferEl,progressBarX,progressBarY);
+    }
     /*
     //以iconAreaHeight绘制分界线
     buffer.fillStyle = "#0f0";
     buffer.fillRect(0,iconAreaHeight,bufferEl.width,1);
     */
-
-    ctx.drawImage(bufferEl,0,0);
+    if(!usedAsFunc){
+        ctx.drawImage(bufferEl,0,0);
+    }
 }
 
 setCVSsize();

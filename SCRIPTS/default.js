@@ -4,7 +4,7 @@ var bufferList = {};/*程序运行过程中,会用到大量buffer,为防止混�
 
 bufferList.drawICOBufferEl = document.createElement("canvas");
 bufferList.drawICOBuffer = bufferList.drawICOBufferEl.getContext("2d");
-function drawICO(width,height){
+function drawICO(width,height,style){//style=[num,num,num]0-1的范围
     bufferList.drawICOBufferEl.width = width;
     bufferList.drawICOBufferEl.height = height;
 
@@ -123,6 +123,16 @@ function drawProgressBar(width,height,progress){
         bufferList.drawProgBarBuffer.fillRect(inset,inset,width-inset,height-inset);
         bufferList.drawProgBarBuffer.fillStyle = "#fff";
         bufferList.drawProgBarBuffer.fillRect(inset,inset,Math.floor(width*progress)-inset,height-inset);
+
+        bufferList.drawProgBarBuffer.beginPath();
+        bufferList.drawProgBarBuffer.moveTo(0,0);
+        bufferList.drawProgBarBuffer.lineTo(width,0);
+        bufferList.drawProgBarBuffer.lineTo(width,height);
+        bufferList.drawProgBarBuffer.lineTo(0,height);
+        bufferList.drawProgBarBuffer.closePath();
+        bufferList.drawProgBarBuffer.strokeStyle = gradient;
+        bufferList.drawProgBarBuffer.lineWidth = 1.5;
+        bufferList.drawProgBarBuffer.stroke();
     }
 
     // 返回数据URL

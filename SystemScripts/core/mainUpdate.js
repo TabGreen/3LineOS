@@ -1,13 +1,20 @@
+
+var update_system_init_interval;
 function initOS(){//操作系统初始化
     clearInterval(update_loadFile_interval);
     tlOS.state = 'init';
+    update_system_init_interval = setInterval(update_init,updateTime);
 }
 function renderFrame_init(){
+    buffer.width = cvsEL.width;
+    buffer.height = cvsEL.height;
     //渲染一帧到canvas(加载完成之后的渲染函数主逻辑)
-    buffer.clearRect(0,0,cvsEL.width,cvsEL.height);
+    buffer.clearRect(0,0,buffer.width,buffer.height);
     //先绘制一个黑屏
     buffer.fillStyle = defaultCloseColor;
-    buffer.fillRect(0,0,cvsEL.width,cvsEL.height);
+    buffer.fillRect(0,0,buffer.width,buffer.height);
+
+    renderFrame_loadFile(0,0,0,false,true);
 
     ctx.drawImage(bufferEl,0,0);
 }
@@ -18,4 +25,3 @@ function update_init(){
 function loadPageToLoginPage(){
     //先预备着
 }
-var update_system_init_interval = setInterval(update_init,updateTime);
