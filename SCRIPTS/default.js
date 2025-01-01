@@ -8,15 +8,77 @@ function drawICO(width,height,style){//style=[num,num,num]0-1的范围
     bufferList.drawICOBufferEl.width = width;
     bufferList.drawICOBufferEl.height = height;
 
-    //先作为测试,绘制一个方块
+    //绘制边框,方便后期作对照
     bufferList.drawICOBuffer.clearRect(0,0,width,height);
-    bufferList.drawICOBuffer.fillStyle = "#fff";
-    bufferList.drawICOBuffer.fillRect(0,0,width,height);
+    bufferList.drawICOBuffer.strokeStyle = "#fff";
+    bufferList.drawICOBuffer.strokeRect(0,0,width,height);
 
-    bufferList.drawICOBuffer.fillStyle = "#888";
-    bufferList.drawICOBuffer.font = `${width/2}px Arial`;
-    bufferList.drawICOBuffer.fillText("图标",0,height/4*2.5);
-    //return bufferList.drawICOBufferEl.toDataURL('image/png');
+    //常量
+    const inset = 1.5;
+    const ScaleFactor_angleDis = 0.06;//同一个圆上不同点的角度间隔.angleDis*3不能大于1
+    const ScaleFactor_circleDis = [0.3,0.5,0.2];//不同同心圆之间的距离,从圆心开始计算.三个数字的和不能大于1
+
+    //数值
+    const radius = width/2 - inset;
+    function getPointOnCircle(r, thetaDegrees, canvasWidth = width, canvasHeight = height) {
+        // 将角度从度转换为弧度，并调整角度，使0度指向正上方
+        const adjustedThetaDegrees = (thetaDegrees - 90) % 360; // 调整角度
+        const thetaRadians = (adjustedThetaDegrees * Math.PI) / 180;
+        // 计算 x 和 y 坐标
+        let x = r * Math.cos(thetaRadians);
+        let y = r * Math.sin(thetaRadians);
+        // 调整坐标以适应 canvas 的坐标系统
+        x += canvasWidth / 2; // 圆心移至画布中心
+        y += canvasHeight / 2; // 反转 y 坐标并移至画布中心
+        return { x, y };
+    }
+
+    const angleDis = 360*ScaleFactor_angleDis;
+    const angle_block = 120-angleDis;//每一“块”所占用的角度,即(360-3angDis)/3
+    const angles = [
+        
+        angleDis/2,
+        angleDis/2+angle_block/2,
+        angleDis/2+angle_block,
+
+        angleDis*1.5+angle_block,
+        angleDis*1.5+angle_block*1.5,
+        angleDis*1.5+angle_block*2,
+
+        angleDis*2.5+angle_block*2,
+        angleDis*2.5+angle_block*2.5,
+        angleDis*2.5+angle_block*3
+    ]; // 角度 (度)
+    //console.log(...angles);
+    const radiusList = [
+        radius*ScaleFactor_circleDis[0],
+        radius*(ScaleFactor_circleDis[0]+ScaleFactor_circleDis[1]),
+        radius
+    ]
+    //获取内部两个圆上点实际位置
+    var pointPos = [
+        [],[],[]
+    ];
+    for(let i=0;i<3;i++){
+        for(let a = 0;a<angles.length;a++){
+            let point = getPointOnCircle(radiusList[i],angles[a]);
+            point.x += inset;
+            point.y += inset;
+            pointPos[i].push(point);
+        }
+    }
+//点可视化(不是应用代码!!)
+    bufferList.drawICOBuffer.beginPath();
+    bufferList.drawICOBuffer.moveTo(pointPos[0][0].x,pointPos[0][0].y);
+    for(let i=0;i<pointPos[0].length;i++){
+        let x = pointPos[0][i].x;
+        let y = pointPos[0][i].y;
+        bufferList.drawICOBuffer.lineTo(x,y);
+    }
+    bufferList.drawICOBuffer.closePath();
+    bufferList.drawICOBuffer.strokeStyle = "#fff";
+    bufferList.drawICOBuffer.stroke();
+    //console.log(...pointPos[0],pointPos.length);
 }
 bufferList.drawProgBarBufferEl = document.createElement("canvas");
 bufferList.drawProgBarBuffer = bufferList.drawProgBarBufferEl.getContext("2d");
