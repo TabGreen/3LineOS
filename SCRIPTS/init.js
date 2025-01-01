@@ -17,10 +17,11 @@ var loadPage_style = {
 }
 var loadPage_data = {
     //加载文件时使用,用于更新数据
+    isLoading:false,
     progress:0,
 }
 var tlOS = {//"操作系统"的数据
-    isloaded:false,
+    isloaded:false,//表示文件列表是否加载完成
     state:'loading'//操作系统状态
 }
 
@@ -88,7 +89,7 @@ worker = 0,init = 0,isProg = true,usedAsFunc = 0){
     buffer.drawImage(bufferList.drawICOBufferEl,iconX,iconY);
     //绘制进度条
     //buffer.fillStyle = "#fff";
-    if(isProg){
+    if(isProg && loadPage.isLoaded){
         drawProgressBar(progressBarWidth,progressBarHeight,loadPage_data.progress)
         buffer.drawImage(bufferList.drawProgBarBufferEl,progressBarX,progressBarY);
     }

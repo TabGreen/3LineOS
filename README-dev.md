@@ -23,6 +23,10 @@
 
     - drawICO(width, height)
     - drawProgressBar(width, height, progress)
+        inset
+        defaultBorderColor
+        defaultBackgroundColor
+        lightColor
 - init.js
     - cvsEL
     - ctx

@@ -170,6 +170,7 @@ function getFileList(){
     downloadFilesWithProgress([fileListPath],
         ()=>{},
         (results)=>{
+            loadPage_data.isLoading = true;//更改以显示进度条
             ReadBlob(results,(result,index)=>{
                 if(result[0] !== null){
                     //下载文件

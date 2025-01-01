@@ -24,11 +24,16 @@ function drawProgressBar(width,height,progress){
     //绘制进度条,并返回dataURL
     const inset = 1.5; // 可以根据需要调整这个值
     //(防止图形边框与画布边框重合)
+    let defaultBorderColor = '#fff'
+    let defaultBackgroundColor = '#333';
+    let lightColor = '#eee';
 
-    let lightColor = '#fff';
     bufferList.drawProgBarBufferEl.width = width;
     bufferList.drawProgBarBufferEl.height = height+inset;
     bufferList.drawProgBarBuffer.clearRect(0,0,width,height);
+// 0. 绘制背景
+    bufferList.drawProgBarBuffer.fillStyle = defaultBackgroundColor;
+    bufferList.drawProgBarBuffer.fillRect(inset,inset,width-inset*2,height-inset*2);
 // 1. 绘制进度-方块
     bufferList.drawProgBarBuffer.fillStyle = lightColor;
     bufferList.drawProgBarBuffer.fillRect(inset,inset,Math.floor((width-inset*2)*progress),height-inset*2);
@@ -103,21 +108,26 @@ function drawProgressBar(width,height,progress){
 
     // 绘制边框
     //为边框加入渐变(测试)
-    const gradient = bufferList.drawProgBarBuffer.createLinearGradient(0, 0, width, 0);
-    let g = defaultGradientColor;
-    gradient.addColorStop(0,`rgb(${g[0][0]},${g[0][1]},${g[0][2]})`);
-    gradient.addColorStop(1,`rgb(${g[1][0]},${g[1][1]},${g[1][2]})`);
-    bufferList.drawProgBarBuffer.strokeStyle = gradient;
-
-    bufferList.drawProgBarBuffer.lineWidth = Math.floor(height/4);
+    if(false){
+        const gradient = bufferList.drawProgBarBuffer.createLinearGradient(0, 0, width, 0);
+        let g = defaultGradientColor;
+        gradient.addColorStop(0,`rgb(${g[0][0]},${g[0][1]},${g[0][2]})`);
+        gradient.addColorStop(1,`rgb(${g[1][0]},${g[1][1]},${g[1][2]})`);
+        bufferList.drawProgBarBuffer.strokeStyle = gradient;
+    }else{
+        bufferList.drawProgBarBuffer.strokeStyle = defaultBorderColor;
+    }
+    bufferList.drawProgBarBuffer.lineWidth = Math.floor(height/8);
+    if(height-inset*2>2){
     bufferList.drawProgBarBuffer.stroke();
+    }
 
 
     /*当然,可能有人把窗口缩放到很小,导致进度条高度为1
     这里不更改主主逻辑,只是重新绘制一下,
     谁让TA们闲的没事干*/
     let minHeight = 2;//高度临界值
-    if(height<=minHeight+inset*2){
+    if(height<=minHeight+inset*2 && false){
         bufferList.drawProgBarBuffer.clearRect(0,0,width,height);
         bufferList.drawProgBarBuffer.fillStyle = "#888";
         bufferList.drawProgBarBuffer.fillRect(inset,inset,width-inset,height-inset);
