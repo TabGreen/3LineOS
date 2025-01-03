@@ -9,14 +9,15 @@ function drawICO(width,height,style){//style=[num,num,num]0-1的范围
     bufferList.drawICOBufferEl.height = height;
 
     //绘制边框,方便后期作对照
-    bufferList.drawICOBuffer.clearRect(0,0,width,height);
-    bufferList.drawICOBuffer.strokeStyle = "#fff";
-    bufferList.drawICOBuffer.strokeRect(0,0,width,height);
-
+    if(false){
+        bufferList.drawICOBuffer.clearRect(0,0,width,height);
+        bufferList.drawICOBuffer.strokeStyle = "#fff";
+        bufferList.drawICOBuffer.strokeRect(0,0,width,height);
+    }
     //常量
     const inset = 1.5;
-    const ScaleFactor_angleDis = 0.06;//同一个圆上不同点的角度间隔.angleDis*3不能大于1
-    const ScaleFactor_circleDis = [0.3,0.5,0.2];//不同同心圆之间的距离,从圆心开始计算.三个数字的和不能大于1
+    const ScaleFactor_angleDis = 0.1;//同一个圆上不同点的角度间隔.angleDis*3不能大于1
+    const ScaleFactor_circleDis = [0.45,0.35,0.2];//不同同心圆之间的距离,从圆心开始计算.三个数字的和不能大于1
 
     //数值
     const radius = width/2 - inset;
@@ -67,17 +68,61 @@ function drawICO(width,height,style){//style=[num,num,num]0-1的范围
             pointPos[i].push(point);
         }
     }
+
+    
 //点可视化(不是应用代码!!)
-    bufferList.drawICOBuffer.beginPath();
-    bufferList.drawICOBuffer.moveTo(pointPos[0][0].x,pointPos[0][0].y);
-    for(let i=0;i<pointPos[0].length;i++){
-        let x = pointPos[0][i].x;
-        let y = pointPos[0][i].y;
-        bufferList.drawICOBuffer.lineTo(x,y);
+    if(false){
+        bufferList.drawICOBuffer.beginPath();
+        bufferList.drawICOBuffer.moveTo(pointPos[0][0].x,pointPos[0][0].y);
+        for(let i=0;i<pointPos[0].length;i++){
+            let x = pointPos[0][i].x;
+            let y = pointPos[0][i].y;
+            bufferList.drawICOBuffer.lineTo(x,y);
+        }
+        bufferList.drawICOBuffer.closePath();
+        bufferList.drawICOBuffer.strokeStyle = "#fff";
+        bufferList.drawICOBuffer.stroke();
+        bufferList.drawICOBuffer.beginPath();
+        bufferList.drawICOBuffer.moveTo(pointPos[1][0].x,pointPos[1][0].y);
+        for(let i=0;i<pointPos[1].length;i++){
+            let x = pointPos[1][i].x;
+            let y = pointPos[1][i].y;
+            bufferList.drawICOBuffer.lineTo(x,y);
+        }
+        bufferList.drawICOBuffer.closePath();
+        bufferList.drawICOBuffer.strokeStyle = "#fff";
+        bufferList.drawICOBuffer.stroke();
     }
-    bufferList.drawICOBuffer.closePath();
-    bufferList.drawICOBuffer.strokeStyle = "#fff";
-    bufferList.drawICOBuffer.stroke();
+    function drawBlock(indexList,color = defaultLightColor){//通过索引连接pointPos中相应的点
+        bufferList.drawICOBuffer.beginPath();
+        bufferList.drawICOBuffer.moveTo(pointPos[1][indexList[0]].x,pointPos[1][indexList[0]].y);
+        for(let i=0;i<indexList.length;i++){
+            let x = pointPos[1][indexList[i]].x;
+            let y =pointPos[1][indexList[i]].y;
+            bufferList.drawICOBuffer.lineTo(x,y);
+        }for(let i = indexList.length-1;i>-1;i--){
+            let x = pointPos[0][indexList[i]].x;
+            let y =pointPos[0][indexList[i]].y;
+            bufferList.drawICOBuffer.lineTo(x,y);
+        }
+        bufferList.drawICOBuffer.closePath();
+        bufferList.drawICOBuffer.fillStyle = color;
+        bufferList.drawICOBuffer.fill();
+    }
+    function getColorRGB(c1,c2,ratio){//两个颜色[r,g,b] 根据 比例系数0-1 之间调和的颜色
+        let r = c1[0]*(1-ratio)+c2[0]*ratio;
+        let g = c1[1]*(1-ratio)+c2[1]*ratio;
+        let b = c1[2]*(1-ratio)+c2[2]*ratio;
+        return [r,g,b];
+    }
+    function getColorText(c){
+        return `rgb(${c[0]},${c[1]},${c[2]})`;
+    }
+    drawBlock([6,7,8],getColorText(getColorRGB(defaultGrayColor_Array,defaultGradientColor[0],style[0])));
+    drawBlock([0,1,2],getColorText(getColorRGB(defaultGrayColor_Array,defaultGradientColor[1],style[1])));
+    drawBlock([3,4,5],getColorText(getColorRGB(defaultGrayColor_Array,defaultGradientColor_Middle_Array,style[2])));
+    // debugger
+    //(bufferList.drawICOBufferEl.toDataURL('image/png'));为了从中截取图标
     //console.log(...pointPos[0],pointPos.length);
 }
 bufferList.drawProgBarBufferEl = document.createElement("canvas");
@@ -87,7 +132,7 @@ function drawProgressBar(width,height,progress){
     const inset = 1.5; // 可以根据需要调整这个值
     //(防止图形边框与画布边框重合)
     let defaultBorderColor = '#fff'
-    let defaultBackgroundColor = '#333';
+    let defaultBackgroundColor = defaultGrayColor;
     let lightColor = '#eee';
 
     bufferList.drawProgBarBufferEl.width = width;

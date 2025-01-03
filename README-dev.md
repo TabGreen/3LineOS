@@ -12,7 +12,14 @@
 # 全局变量以及函数(函数后以()做标记)
 - variables.js
     - defaultGradientColor
+    - defaultGradientColor_Middle_Array
+    - defaultGradientColor_Middle
+    - defaultCloseColor_Array
     - defaultCloseColor
+    - defaultLightColor_Array
+    - defaultLightColor
+    - defaultGrayColor_Array
+    - defaultGrayColor
     - updateTime
 - default.js
     - bufferList*程序运行过程中,会用到大量buffer,为防止混淆,这里可以由不同函数自行添加CVS或CTX*
@@ -99,5 +106,17 @@
 # 计划
 1. 第一个开关-加载文件**是否**使用AJAX(完成✅)
 2. ~~分离~~**改造**加载页面渲染函数(完成✅)
-3. 绘制图标……?
+3. 绘制图标……?(完成✅)
     *又要做数学题了*
+
+    ***第一阶段统计:***
+    - **JS:655行**
+    - HTML:29行
+    - CSS:12行
+    - JSON:6行
+
+    共计代码行数:*707*行,
+    共计字符数量:*23920*字
+
+    统计时间:*2025-01-04 04:28*
+4. 添加动画

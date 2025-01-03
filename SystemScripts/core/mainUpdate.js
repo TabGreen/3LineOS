@@ -14,7 +14,7 @@ function renderFrame_init(){
     buffer.fillStyle = defaultCloseColor;
     buffer.fillRect(0,0,buffer.width,buffer.height);
 
-    renderFrame_loadFile(0,0,0,false,true);
+    renderFrame_loadFile(1,0,0,false,true);
 
     ctx.drawImage(bufferEl,0,0);
 }
