@@ -5,22 +5,26 @@ var bufferList = {};/*程序运行过程中,会用到大量buffer,为防止混�
 bufferList.drawICOBufferEl = document.createElement("canvas");
 bufferList.drawICOBuffer = bufferList.drawICOBufferEl.getContext("2d");
 function drawICO(width,height,style){//style=[num,num,num]0-1的范围
-    bufferList.drawICOBufferEl.width = width;
-    bufferList.drawICOBufferEl.height = height;
+    //常量
+    const inset = 1.5;
 
+    bufferList.drawICOBufferEl.width = width+inset*2;
+    bufferList.drawICOBufferEl.height = height+inset*2;
+
+    // bufferList.drawICOBuffer.fillStyle = defaultLightColor;
+    // bufferList.drawICOBuffer.fillRect(0,0,bufferList.drawICOBufferEl.width,bufferList.drawICOBufferEl.height);
     //绘制边框,方便后期作对照
     if(false){
-        bufferList.drawICOBuffer.clearRect(0,0,width,height);
         bufferList.drawICOBuffer.strokeStyle = "#fff";
         bufferList.drawICOBuffer.strokeRect(0,0,width,height);
     }
     //常量
-    const inset = 1.5;
-    const ScaleFactor_angleDis = 0.1;//同一个圆上不同点的角度间隔.angleDis*3不能大于1
-    const ScaleFactor_circleDis = [0.45,0.35,0.2];//不同同心圆之间的距离,从圆心开始计算.三个数字的和不能大于1
+    const ScaleFactor_angleDis = [0.06,0.115,0.15];//同一个圆上不同点的角度间隔.angleDis*3不能大于1
+    const ScaleFactor_circleDis = [0.45,0.35,0.1];//不同同心圆之间的距离,从圆心开始计算.三个数字的和不能大于1
+    //const ScaleFactor_circleDis = [0.2,0.8];//为了获取小图标
 
     //数值
-    const radius = width/2 - inset;
+    const radius = width/2;
     function getPointOnCircle(r, thetaDegrees, canvasWidth = width, canvasHeight = height) {
         // 将角度从度转换为弧度，并调整角度，使0度指向正上方
         const adjustedThetaDegrees = (thetaDegrees - 90) % 360; // 调整角度
@@ -34,9 +38,19 @@ function drawICO(width,height,style){//style=[num,num,num]0-1的范围
         return { x, y };
     }
 
-    const angleDis = 360*ScaleFactor_angleDis;
-    const angle_block = 120-angleDis;//每一“块”所占用的角度,即(360-3angDis)/3
-    const angles = [
+    const angleDis = [
+        360*ScaleFactor_angleDis[0],
+        360*ScaleFactor_angleDis[1],
+        360*ScaleFactor_angleDis[2]
+    ];
+    const angle_block = [
+        120-angleDis[0],
+        120-angleDis[1],
+        120-angleDis[2]
+    ];//每一“块”所占用的角度,即(360-3angDis)/3
+
+    function getAngleList(angleDis,angle_block){
+    return [
         
         angleDis/2,
         angleDis/2+angle_block/2,
@@ -51,6 +65,12 @@ function drawICO(width,height,style){//style=[num,num,num]0-1的范围
         angleDis*2.5+angle_block*3
     ]; // 角度 (度)
     //console.log(...angles);
+    }
+    const angles = [
+        getAngleList(angleDis[0],angle_block[0]),
+        getAngleList(angleDis[1],angle_block[1]),
+        getAngleList(angleDis[2],angle_block[2])
+    ];
     const radiusList = [
         radius*ScaleFactor_circleDis[0],
         radius*(ScaleFactor_circleDis[0]+ScaleFactor_circleDis[1]),
@@ -60,9 +80,9 @@ function drawICO(width,height,style){//style=[num,num,num]0-1的范围
     var pointPos = [
         [],[],[]
     ];
-    for(let i=0;i<3;i++){
-        for(let a = 0;a<angles.length;a++){
-            let point = getPointOnCircle(radiusList[i],angles[a]);
+    for(let i=0;i<angles.length;i++){
+        for(let a = 0;a<angles[i].length;a++){
+            let point = getPointOnCircle(radiusList[i],angles[i][a]);
             point.x += inset;
             point.y += inset;
             pointPos[i].push(point);
@@ -118,11 +138,32 @@ function drawICO(width,height,style){//style=[num,num,num]0-1的范围
     function getColorText(c){
         return `rgb(${c[0]},${c[1]},${c[2]})`;
     }
+    function drawLine(indexList,color = defaultLightColor){
+        bufferList.drawICOBuffer.beginPath();
+        bufferList.drawICOBuffer.moveTo(pointPos[2][indexList[0]].x,pointPos[2][indexList[0]].y);
+        for(let i=0;i<indexList.length;i++){
+            let x = pointPos[2][indexList[i]].x;
+            let y =pointPos[2][indexList[i]].y;
+            bufferList.drawICOBuffer.lineTo(x,y);
+        }for(let i = indexList.length-1;i>-1;i--){
+            let x = pointPos[2][indexList[i]].x;
+            let y=pointPos[2][indexList[i]].y;
+            bufferList.drawICOBuffer.lineTo(x,y);
+        }
+        bufferList.drawICOBuffer.closePath();
+        bufferList.drawICOBuffer.strokeStyle = color;
+        bufferList.drawICOBuffer.stroke();
+    }
     drawBlock([6,7,8],getColorText(getColorRGB(defaultGrayColor_Array,defaultGradientColor[0],style[0])));
-    drawBlock([0,1,2],getColorText(getColorRGB(defaultGrayColor_Array,defaultGradientColor[1],style[1])));
-    drawBlock([3,4,5],getColorText(getColorRGB(defaultGrayColor_Array,defaultGradientColor_Middle_Array,style[2])));
+    drawBlock([0,1,2],getColorText(getColorRGB(defaultGrayColor_Array,defaultGradientColor[1],style[0])));
+    drawBlock([3,4,5],getColorText(getColorRGB(defaultGrayColor_Array,defaultGradientColor_Middle_Array,style[0])));
+
+    const ScaleFactor_Line = 0.45;
+    drawLine([6,7,8],getColorText(getColorRGB(defaultGrayColor_Array,getColorRGB(defaultGradientColor[0],defaultGrayColor_Array,ScaleFactor_Line),style[0])));
+    drawLine([0,1,2],getColorText(getColorRGB(defaultGrayColor_Array,getColorRGB(defaultGradientColor[1],defaultGrayColor_Array,ScaleFactor_Line),style[0])));
+    drawLine([3,4,5],getColorText(getColorRGB(defaultGrayColor_Array,getColorRGB(defaultGradientColor_Middle_Array,defaultGrayColor_Array,ScaleFactor_Line),style[0])));
     // debugger
-    //(bufferList.drawICOBufferEl.toDataURL('image/png'));为了从中截取图标
+    //i = (bufferList.drawICOBufferEl.toDataURL('image/png'));//为了从中截取图标
     //console.log(...pointPos[0],pointPos.length);
 }
 bufferList.drawProgBarBufferEl = document.createElement("canvas");
