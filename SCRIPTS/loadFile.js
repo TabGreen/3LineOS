@@ -170,7 +170,7 @@ function getFileList(){
     downloadFilesWithProgress([fileListPath],
         ()=>{},
         (results)=>{
-            loadPage_data.isLoading = true;//更改以显示进度条
+            loadPage.isLoading = true;//更改以显示进度条
             ReadBlob(results,(result,index)=>{
                 if(result[0] !== null){
                     //下载文件
@@ -203,12 +203,12 @@ function getJSFilesByScEl(fileList){
             //加载完成
             loadPage.isLoaded = true;
         });
-        loadPage_data.progress = 0.9;
+        loadPage.progress = 0.9;
 }
 function getFileListByAJAX(fileList){
     downloadFilesWithProgress(fileList,
         (progress)=>{
-            loadPage_data.progress = progress;
+            loadPage.progress = progress;
         },
         (results)=>{
             //if……null……
@@ -223,7 +223,7 @@ function getFileListByAJAX(fileList){
                     }
                 }
                 document.body.appendChild(scriptEl);
-                loadPage_data.progress = 1;
+                loadPage.progress = 1;
                 loadPage.isLoaded = true;
             });
         }

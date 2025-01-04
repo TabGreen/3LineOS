@@ -155,13 +155,13 @@ function drawICO(width,height,style){//style=[num,num,num]0-1的范围
         bufferList.drawICOBuffer.stroke();
     }
     drawBlock([6,7,8],getColorText(getColorRGB(defaultGrayColor_Array,defaultGradientColor[0],style[0])));
-    drawBlock([0,1,2],getColorText(getColorRGB(defaultGrayColor_Array,defaultGradientColor[1],style[0])));
-    drawBlock([3,4,5],getColorText(getColorRGB(defaultGrayColor_Array,defaultGradientColor_Middle_Array,style[0])));
+    drawBlock([0,1,2],getColorText(getColorRGB(defaultGrayColor_Array,defaultGradientColor[1],style[1])));
+    drawBlock([3,4,5],getColorText(getColorRGB(defaultGrayColor_Array,defaultGradientColor_Middle_Array,style[2])));
 
     const ScaleFactor_Line = 0.45;
     drawLine([6,7,8],getColorText(getColorRGB(defaultGrayColor_Array,getColorRGB(defaultGradientColor[0],defaultGrayColor_Array,ScaleFactor_Line),style[0])));
-    drawLine([0,1,2],getColorText(getColorRGB(defaultGrayColor_Array,getColorRGB(defaultGradientColor[1],defaultGrayColor_Array,ScaleFactor_Line),style[0])));
-    drawLine([3,4,5],getColorText(getColorRGB(defaultGrayColor_Array,getColorRGB(defaultGradientColor_Middle_Array,defaultGrayColor_Array,ScaleFactor_Line),style[0])));
+    drawLine([0,1,2],getColorText(getColorRGB(defaultGrayColor_Array,getColorRGB(defaultGradientColor[1],defaultGrayColor_Array,ScaleFactor_Line),style[1])));
+    drawLine([3,4,5],getColorText(getColorRGB(defaultGrayColor_Array,getColorRGB(defaultGradientColor_Middle_Array,defaultGrayColor_Array,ScaleFactor_Line),style[2])));
     // debugger
     //i = (bufferList.drawICOBufferEl.toDataURL('image/png'));//为了从中截取图标
     //console.log(...pointPos[0],pointPos.length);

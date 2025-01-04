@@ -42,15 +42,18 @@
     - loadPage = {
         - isLoaded
         - progress
+        - animation = {
+            - isFinished
+            - step
+            - progress
+            - GO()
+        }
     }
     - loadPage_style = {
         - iconWidth:0.115,//一个图标对于CVS的高度或宽度的占比.(图像长宽相等)
         - progressBarWidth:0.13,//进度条对于CVS的高度或宽度的占比.
         - progressBarHeight:0.006,//进度条对于CVS的高度或宽度的占比.
         - ScaleFactor_progBarDis:0.4,//进度条在Y坐标上与图标的距离(this*iconWidth)的比值.
-    }
-    - loadPage_data = {
-        - progress
     }
     - tlOS = {//three line OS的缩写
         - isLoaded
@@ -69,6 +72,18 @@
     - getJSFilesByScEl()
     - getFileListByAJAX()
 - mainUpdate.js
+    - update_system_init_interval
+    - workerList
+    - loadWorkersPage = {
+        - isLoaded
+        - beginningTime
+        - progress
+        - ainmation = {
+            - progress
+            - loopTime
+            - GO()
+        }
+    }
     - initOS()
     - loadPageToLoginPage() //先预备着,不知道用不用
 - loadWorkers.js
@@ -119,4 +134,5 @@
     共计字符数量:*23920*字
 
     统计时间:*2025-01-04 04:28*
-4. 添加动画
+4. 添加动画(完成✅)
+5. 载入Workers

@@ -1,9 +1,36 @@
 
 var update_system_init_interval;
+var workerList = [];
+var loadWorkersPage = {
+    isLoaded:false,
+    beginningTime:null,//开始加载的时间
+    progress:0,//其实只有0和1(至少目前是这样的)
+    ainmation:{
+        progress:0,//说是进度,其实是控制外观的一个变量(至少目前是这样的)
+        loopTime:700,//动画循环周期,以毫秒为单位
+        GO:function(){
+            let now = new Date().getTime();
+            let elapsedTime = now-loadWorkersPage.beginningTime;
+            let looped = Math.floor(elapsedTime/loadWorkersPage.ainmation.loopTime);
+            let more = elapsedTime % loadWorkersPage.ainmation.loopTime;
+            let numerator;
+            if(looped%2==0){
+                numerator = more;
+            }else{
+                numerator = loadWorkersPage.ainmation.loopTime-more;
+            }
+            let progress = numerator/loadWorkersPage.ainmation.loopTime;
+            loadWorkersPage.ainmation.progress = progress;
+        }
+    },
+};
 function initOS(){//操作系统初始化
     clearInterval(update_loadFile_interval);
     tlOS.state = 'init';
     update_system_init_interval = setInterval(update_init,updateTime);
+
+    loadWorkers();
+    loadWorkersPage.beginningTime = new Date().getTime();
 }
 function renderFrame_init(){
     bufferEl.width = cvsEL.width;
@@ -14,7 +41,13 @@ function renderFrame_init(){
     buffer.fillStyle = defaultCloseColor;
     buffer.fillRect(0,0,bufferEl.width,bufferEl.height);
 
-    renderFrame_loadFile(1,0,0,false,true);
+    let loadWorkerProgress = loadWorkersPage.progress;
+    if(tlOS.ainmation){
+        loadWorkerProgress = loadWorkersPage.ainmation.progress;
+        loadWorkersPage.ainmation.GO();
+    }
+
+    renderFrame_loadFile(1,loadWorkerProgress,0,false,true);
 
     ctx.drawImage(bufferEl,0,0);
 }

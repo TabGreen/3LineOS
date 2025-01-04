@@ -8,22 +8,38 @@ var buffer = bufferEl.getContext("2d");
 var loadPage = {//"加载"页面的数据
     isLoaded:false,
     progress:0,
-}
+    progress_animation:{
+        isFinished:false,
+        step:0.1,
+        progress:0,
+        GO:function(){
+            if(this.progress < 1 && !this.isFinished){
+                this.progress += this.step*(loadPage.progress-this.progress);
+            }else{
+                this.progress = 1;
+                this.isFinished = true;
+            }
+        }
+    },
+};
 var loadPage_style = {
     iconWidth:0.115,//一个图标对于CVS的高度或宽度的占比.(图像长宽相等)
     progressBarWidth:0.13,//进度条对于CVS的高度或宽度的占比.
     progressBarHeight:0.006,//进度条对于CVS的高度或宽度的占比.
     ScaleFactor_progBarDis:0.4,//进度条在Y坐标上与图标的距离(this*iconWidth)的比值.
-}
+};
+/*
 var loadPage_data = {
     //加载文件时使用,用于更新数据
     isLoading:false,
     progress:0,
 }
+*/
 var tlOS = {//"操作系统"的数据
     isloaded:false,//表示文件列表是否加载完成
-    state:'loading'//操作系统状态
-}
+    state:'loading',//操作系统状态
+    ainmation:true,
+};
 
 //
 window.addEventListener('resize',setCVSsize);
@@ -43,7 +59,7 @@ function setCVSsize(e){
             break;
     }
 }
-function renderFrame_loadFile(file = loadPage_data.progress,
+function renderFrame_loadFile(file = loadPage.progress,
 worker = 0,init = 0,isProg = true,usedAsFunc = 0){
 /*这个函数既可以作为加载文件时的渲染函数,也会在加载worker和初始化时作为普通函数被调用
 这几个参数是可选的,默认情况为了适应加载文件的页面*/
@@ -85,12 +101,20 @@ worker = 0,init = 0,isProg = true,usedAsFunc = 0){
     progressBarHeight = Math.ceil(progressBarHeight);
 
     //绘制图标
+    if(tlOS.ainmation && !loadPage.isLoaded){
+        file = loadPage.progress_animation.progress;
+            if(!loadPage.isLoaded){
+            loadPage.progress_animation.GO();
+            //console.log(loadPage.progress_animation.progress);
+        }
+    }
+
     drawICO(iconWidth,iconWidth,[file,worker,init]);
     buffer.drawImage(bufferList.drawICOBufferEl,iconX,iconY);
     //绘制进度条
     //buffer.fillStyle = "#fff";
-    if(isProg && loadPage.isLoaded){
-        drawProgressBar(progressBarWidth,progressBarHeight,loadPage_data.progress)
+    if(isProg && !loadPage.isLoaded){
+        drawProgressBar(progressBarWidth,progressBarHeight,file);
         buffer.drawImage(bufferList.drawProgBarBufferEl,progressBarX,progressBarY);
     }
     /*
