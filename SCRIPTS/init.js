@@ -6,18 +6,43 @@ var buffer = bufferEl.getContext("2d");
 
 //
 var loadPage = {//"加载"页面的数据
+    isStartLoad:false,
+    beginningTime:null,
     isLoaded:false,
+    //isFinished:false,
     progress:0,
     progress_animation:{
         isFinished:false,
-        step:0.1,
+        step:0.35,//每秒
         progress:0,
         GO:function(){
             if(this.progress < 1 && !this.isFinished){
-                this.progress += this.step*(loadPage.progress-this.progress);
-            }else{
-                this.progress = 1;
-                this.isFinished = true;
+                let more = loadPage.progress-this.progress;
+                this.progress += this.step*more;
+                //console.log(this.progress,loadPage.progress);
+                if(this.progress > loadPage.progress){
+                    if(!loadPage.isLoaded){
+                        this.progress = loadPage.progress;
+                    }
+                }
+                if(this.progress >= 1){
+                    this.progress = 1;
+                    this.isFinished = true;
+                    //console.log('animation finish with GO');
+                }
+                if(loadPage.isLoaded){
+                    this.progress = 1;
+                }
+            }
+        },
+        END:function(){
+            if(this.progress < 1 && loadPage.isLoaded){
+                this.progress += this.step*(this.progress+this.step*2.4);
+                if(this.progress >= 1){
+                    this.progress = 1;
+                    this.isFinished = true;
+                    //console.log('animation finish with END');
+                }
             }
         }
     },
@@ -101,19 +126,22 @@ worker = 0,init = 0,isProg = true,usedAsFunc = 0){
     progressBarHeight = Math.ceil(progressBarHeight);
 
     //绘制图标
-    if(tlOS.ainmation && !loadPage.isLoaded){
+    if(tlOS.ainmation && !loadPage.isLoaded && loadPage.isStartLoad){
         file = loadPage.progress_animation.progress;
-            if(!loadPage.isLoaded){
+        if(!loadPage.isLoaded){
             loadPage.progress_animation.GO();
             //console.log(loadPage.progress_animation.progress);
         }
+    }else if(tlOS.ainmation && loadPage.isLoaded && !loadPage.progress_animation.isFinished){
+        file = loadPage.progress_animation.progress;
+        loadPage.progress_animation.END();
     }
 
     drawICO(iconWidth,iconWidth,[file,worker,init]);
     buffer.drawImage(bufferList.drawICOBufferEl,iconX,iconY);
     //绘制进度条
     //buffer.fillStyle = "#fff";
-    if(isProg && !loadPage.isLoaded){
+    if(isProg && !loadPage.isLoaded && loadPage.isStartLoad){
         drawProgressBar(progressBarWidth,progressBarHeight,file);
         buffer.drawImage(bufferList.drawProgBarBufferEl,progressBarX,progressBarY);
     }

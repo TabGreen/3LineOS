@@ -40,6 +40,8 @@
     - bufferEl
     - buffer
     - loadPage = {
+        - isStartLoad
+        - beginningTime
         - isLoaded
         - progress
         - animation = {
@@ -47,6 +49,7 @@
             - step
             - progress
             - GO()
+            - END()
         }
     }
     - loadPage_style = {
@@ -90,7 +93,7 @@
     - loadWorkers() //预备
 # 开关记录
 - 控制加载文件方法的开关
-    - loadFile.js 184
+    - loadFile.js 185
 # 进度
 1. 实现canvas自动适应浏览器窗口大小,并在窗口变化时渲染一帧 (完成✅)
 2. 实现加载文件并显示进度条

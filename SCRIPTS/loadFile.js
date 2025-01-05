@@ -31,8 +31,9 @@ async function downloadFilesWithProgress(fileUrls, handleProgress = ()=>{},hande
                 if (done) break;
                 fileDownloadedSize += value.length;
                 downloadedSize += value.length;
-                const progress = (downloadedSize / totalSize) * 100;
-                handleProgress(progress.toFixed(2)); // 调用进度回调
+                //const progress = (downloadedSize / totalSize) * 100;
+                const progress = (downloadedSize / totalSize)
+                handleProgress(progress); // 调用进度回调
                 // 累积数据块
                 chunks.push(value);
                 //console.log(`Received chunk of size ${value.length}`);
@@ -183,6 +184,8 @@ function getFileList(){
                         });
                     }
                     let isDevMode = true;
+                    loadPage.isStartLoad = true;
+                    loadPage.beginningTime = new Date().getTime();
                     if(isDevMode){
                         getJSFilesByScEl(JSfileList);
                     }else{
@@ -202,13 +205,16 @@ function getJSFilesByScEl(fileList){
         loadScriptsInOrder(fileList,()=>{
             //加载完成
             loadPage.isLoaded = true;
+            loadPage.progress = 1;
         });
         loadPage.progress = 0.9;
+        //console.log(loadPage.progress);
 }
 function getFileListByAJAX(fileList){
     downloadFilesWithProgress(fileList,
         (progress)=>{
             loadPage.progress = progress;
+            //console.log(loadPage.progress);
         },
         (results)=>{
             //if……null……
@@ -217,7 +223,7 @@ function getFileListByAJAX(fileList){
                 for(let i = 0;i < result.length;i++){
                     if(result[i] !== null){
                         scriptEl.innerHTML += '\n'+result[i];
-                        console.log(scriptEl)
+                        //console.log(scriptEl);
                     }else{
                         //处理错误
                     }
