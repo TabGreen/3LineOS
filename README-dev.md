@@ -72,6 +72,8 @@
     - ReadBlob()
     - loadScriptsInOrder()
     - getFileList()
+    - handleFileLoadProgress()
+    - getAverageResponseTime()
     - getJSFilesByScEl()
     - getFileListByAJAX()
 - mainUpdate.js
@@ -138,4 +140,5 @@
 
     统计时间:*2025-01-04 04:28*
 4. 添加动画(完成✅)
+    优化动画(完成✅)
 5. 载入Workers

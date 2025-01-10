@@ -16,4 +16,4 @@ const defaultLightColor_Array = [238,238,238];
 const defaultLightColor = `rgb(${defaultLightColor_Array[0]},${defaultLightColor_Array[1]},${defaultLightColor_Array[2]})`;
 const defaultGrayColor_Array = [51,51,51];
 const defaultGrayColor = `rgb(${defaultGrayColor_Array[0]},${defaultGrayColor_Array[1]},${defaultGrayColor_Array[2]})`;
-const updateTime = 100;
+const updateTime = 40;

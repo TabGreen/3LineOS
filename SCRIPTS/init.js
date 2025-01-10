@@ -8,41 +8,48 @@ var buffer = bufferEl.getContext("2d");
 var loadPage = {//"加载"页面的数据
     isStartLoad:false,
     beginningTime:null,
+    progHis:[],
     isLoaded:false,
     //isFinished:false,
     progress:0,
     progress_animation:{
         isFinished:false,
         step:0.35,//每秒
+        maxTime:400,//每次进度(表现)一个阶段更新所用的时间(毫秒)
         progress:0,
         GO:function(){
-            if(this.progress < 1 && !this.isFinished){
-                let more = loadPage.progress-this.progress;
-                this.progress += this.step*more;
-                //console.log(this.progress,loadPage.progress);
-                if(this.progress > loadPage.progress){
-                    if(!loadPage.isLoaded){
-                        this.progress = loadPage.progress;
-                    }
-                }
-                if(this.progress >= 1){
-                    this.progress = 1;
-                    this.isFinished = true;
-                    //console.log('animation finish with GO');
-                }
-                if(loadPage.isLoaded){
-                    this.progress = 1;
-                }
+            if(!loadPage.progHis || loadPage.progHis.length<2){
+                return;
             }
+            const now = new Date().getTime();
+            const theLastLoaded_index = loadPage.progHis.length-2;
+            const theLast_index = loadPage.progHis.length-1;
+            const theMinProgress = loadPage.progHis[theLastLoaded_index][0];
+            //const elapsedTime_items = loadPage.progHis[theLast_index][1]-loadPage.progHis[theLastLoaded_index][1];
+            const elapsedTime_now = now-loadPage.progHis[theLast_index][1];
+            const elapsedProgress = loadPage.progHis[theLast_index][0]-theMinProgress;
+
+            let ScaleFactor = (elapsedTime_now/this.maxTime);
+            if(ScaleFactor > 1)ScaleFactor = 1;
+            const more = elapsedProgress*ScaleFactor;
+            const newProgress = theMinProgress+more;
+
+            this.progress = newProgress;
         },
         END:function(){
             if(this.progress < 1 && loadPage.isLoaded){
-                this.progress += this.step*(this.progress+this.step*2.4);
-                if(this.progress >= 1){
-                    this.progress = 1;
-                    this.isFinished = true;
-                    //console.log('animation finish with END');
-                }
+                if(!this.ending)this.ending = {
+                    time:new Date().getTime(),
+                    progress:this.progress,
+                    elapsedProgress:loadPage.progress - this.progress,
+                    maxTime:700
+                };
+                const now = new Date().getTime();
+                const elapsedTime_now = now-this.ending.time;
+                let ScaleFactor = (elapsedTime_now/this.ending.maxTime);
+                if(ScaleFactor > 1)ScaleFactor = 1;
+                const more = this.ending.elapsedProgress*ScaleFactor;
+                this.progress = this.ending.progress+more;
             }
         }
     },

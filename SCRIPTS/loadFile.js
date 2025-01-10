@@ -134,7 +134,7 @@ async function ReadBlob(files, handleResult = ()=>{}, readType = 'text') {
 }
 
 
-function loadScriptsInOrder(fileList, handleEnd = ()=>{}) {
+function loadScriptsInOrder(fileList,handleProgress = ()=>{},handleEnd = ()=>{}) {
     let index = 0;
     function loadNextScript() {
     if (index >= fileList.length) {
@@ -148,7 +148,7 @@ function loadScriptsInOrder(fileList, handleEnd = ()=>{}) {
       script.async = false; // 确保脚本按顺序执行
       script.defer = true;  // 确保脚本在文档解析完成后执行
     script.onload = () => {
-        //console.log(`Script ${index + 1} (${url}) loaded and executed successfully.`);
+        handleProgress(index/fileList.length);
         index++;
         loadNextScript(); // 加载下一个脚本
     };
@@ -184,8 +184,11 @@ function getFileList(){
                         });
                     }
                     let isDevMode = true;
+
                     loadPage.isStartLoad = true;
                     loadPage.beginningTime = new Date().getTime();
+                    loadPage.progHis.push([0,new Date().getTime()]);
+
                     if(isDevMode){
                         getJSFilesByScEl(JSfileList);
                     }else{
@@ -200,22 +203,38 @@ function getFileList(){
             });
     });
 }
+function handleFileLoadProgress(progress){
+    loadPage.progress = progress;
+    loadPage.progHis.push([progress,new Date().getTime()]);
+    if(tlOS.ainmation){
+        loadPage.progress_animation.maxTime = getAverageResponseTime()/2;
+    }
+    //console.log(getAverageResponseTime());
+    //console.log(...loadPage.progHis);
+    //console.log(loadPage.progress);
+}
+//计算平均相应时间
+function getAverageResponseTime(){
+    //计算每两次加载的时间间隔
+    let list = [];
+    for(let i = 0;i < loadPage.progHis.length-1;i++){
+        list.push(loadPage.progHis[i+1][1]-loadPage.progHis[i][1]);
+    }
+    //计算平均值
+    return list.reduce((a, b) => a + b, 0) / list.length;
+}
 function getJSFilesByScEl(fileList){
         //插入script
-        loadScriptsInOrder(fileList,()=>{
+        loadScriptsInOrder(fileList,handleFileLoadProgress,()=>{
             //加载完成
             loadPage.isLoaded = true;
             loadPage.progress = 1;
         });
-        loadPage.progress = 0.9;
+        //loadPage.progress = 0.9;
         //console.log(loadPage.progress);
 }
 function getFileListByAJAX(fileList){
-    downloadFilesWithProgress(fileList,
-        (progress)=>{
-            loadPage.progress = progress;
-            //console.log(loadPage.progress);
-        },
+    downloadFilesWithProgress(fileList,handleFileLoadProgress,
         (results)=>{
             //if……null……
             ReadBlob(results,(result,index)=>{
