@@ -17,3 +17,7 @@ const defaultLightColor = `rgb(${defaultLightColor_Array[0]},${defaultLightColor
 const defaultGrayColor_Array = [51,51,51];
 const defaultGrayColor = `rgb(${defaultGrayColor_Array[0]},${defaultGrayColor_Array[1]},${defaultGrayColor_Array[2]})`;
 const updateTime = 40;
+
+const workerNumber = 8;
+const corePath = 'SystemScripts/core/';
+const codeRunnerPath = corePath + 'codeRunner/workerMain.js';

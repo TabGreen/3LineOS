@@ -1,4 +1,4 @@
-async function downloadFilesWithProgress(fileUrls, handleProgress = ()=>{},handelResults = ()=>{}) {
+async function downloadFilesWithProgress(fileUrls, handleProgress = ()=>{},handleResults = ()=>{}) {
     let totalSize = 0;
     let downloadedSize = 0;
     const results = Array(fileUrls.length).fill(null); // 初始化结果数组，所有项默认为 null
@@ -62,7 +62,7 @@ async function downloadFilesWithProgress(fileUrls, handleProgress = ()=>{},hande
         //console.error('Error during download:', error);
     }
     //console.log(results);
-    handelResults(results);
+    handleResults(results);
     //return results;
 }
 async function ReadBlob(files, handleResult = ()=>{}, readType = 'text') {

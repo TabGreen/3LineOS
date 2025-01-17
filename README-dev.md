@@ -21,6 +21,9 @@
     - defaultGrayColor_Array
     - defaultGrayColor
     - updateTime
+    - workerNumber
+    - corePath
+    - codeRunnerPath
 - default.js
     - bufferList*程序运行过程中,会用到大量buffer,为防止混淆,这里可以由不同函数自行添加CVS或CTX*
     - bufferList.drawICOBufferEl
@@ -93,6 +96,34 @@
     - loadPageToLoginPage() //先预备着,不知道用不用
 - loadWorkers.js
     - loadWorkers() //预备
+# Worker指令登记
+在worker的高速运行中,传输文本指令会占用大量资源,因此在这里对照文本给出数字编号,以提高效率
+
+示例:
+```JavaScript
+//主线程
+workerList[i].postMessage({
+    cmd:[1,1,3],
+    data:{
+        //data goes here
+    }
+});
+//Worker
+addEventListener('message',(e)=>{handleMessage(e.data);});function handleMessage(data){/*code goes here*/}
+/*code goes here*/
+postMessage({
+    cmd:[1,1,3],
+    result:{
+        //result goes here
+    },
+})
+```
+
+- get`1`
+    - loadStatus`1`
+        - all`1`
+        - file`2`
+        - readyToMessage`3`
 # 开关记录
 - 控制加载文件方法的开关
     - loadFile.js 185
@@ -141,4 +172,5 @@
     统计时间:*2025-01-04 04:28*
 4. 添加动画(完成✅)
     优化动画(完成✅)
-5. 载入Workers
+5. 载入Workers(完成✅)
+6. 准备启动Worker
